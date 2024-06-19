@@ -1,0 +1,24 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: npm-install
+spec:
+  steps:
+    - name: npm-install
+      image: node:14
+      script: |
+        #!/bin/sh
+        npm install
+
+---
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: jasmine-tests
+spec:
+  steps:
+    - name: jasmine-tests
+      image: node:14
+      script: |
+        #!/bin/sh
+        npm test

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tax Calculator V2</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Tax Calculator V2</h1>
+        <form id="taxForm">
+            <label for="income">Enter your income:</label>
+            <input type="number" id="income" name="income" required>
+            <button type="submit">Calculate</button>
+        </form>
+        <div id="result" class="hidden">
+            <p>Tax Rate: <span id="taxRate"></span>%</p>
+            <p>Income Range: <span id="incomeRange"></span></p>
+        </div>
+        <h2>Tax Brackets</h2>
+        <table>
+            <tr>
+                <th>Income Range</th>
+                <th>Tax Rate</th>
+            </tr>
+            <tr>
+                <td>$0 - $9,875</td>
+                <td>10%</td>
+            </tr>
+            <tr>
+                <td>$9,876 - $40,125</td>
+                <td>12%</td>
+            </tr>
+            <tr>
+                <td>$40,126 - $85,525</td>
+                <td>22%</td>
+            </tr>
+            <tr>
+                <td>$85,526 - $163,300</td>
+                <td>24%</td>
+            </tr>
+            <tr>
+                <td>$163,301 - $207,350</td>
+                <td>32%</td>
+            </tr>
+            <tr>
+                <td>$207,351 - $518,400</td>
+                <td>35%</td>
+            </tr>
+            <tr>
+                <td>Over $518,400</td>
+                <td>37%</td>
+            </tr>
+        </table>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

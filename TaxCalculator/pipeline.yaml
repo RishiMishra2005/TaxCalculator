@@ -1,0 +1,105 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: tax-calculator-pipeline
+spec:
+  tasks:
+    - name: git-clone
+      taskRef:
+        name: git-clone-task
+    - name: npminstall
+      runAfter:
+        - git-clone
+      taskRef:
+        name: npm-install-task
+    - name: test
+      runAfter:
+        - npminstall
+      taskRef:
+        name: jasmine-test-task
+    - name: build
+      runAfter:
+        - test
+      taskRef:
+        name: npm-build-task
+---
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: git-clone-task
+spec:
+  params:
+    - name: url
+      type: string
+  steps:
+    - name: clone
+      image: alpine/git
+      script: |
+        #!/bin/sh
+        git clone $(params.url) /workspace/source
+  workspaces:
+    - name: source
+---
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: npm-install-task
+spec:
+  steps:
+    - name: install
+      image: node:14
+      workingDir: /workspace/source
+      script: |
+        #!/bin/bash
+        npm install
+  workspaces:
+    - name: source
+---
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: jasmine-test-task
+spec:
+  steps:
+    - name: test
+      image: node:14
+      workingDir: /workspace/source
+      script: |
+        #!/bin/bash
+        npm test
+  workspaces:
+    - name: source
+---
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: npm-build-task
+spec:
+  steps:
+    - name: build
+      image: node:14
+      workingDir: /workspace/source
+      script: |
+        #!/bin/bash
+        npm run build
+  workspaces:
+    - name: source
+---
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  name: tax-calculator-pipeline-run
+spec:
+  pipelineRef:
+    name: tax-calculator-pipeline
+  params:
+    - name: url
+      value: "https://github.com/your-repo/tax-calculator.git"  # Replace with your actual repository URL
+  workspaces:
+    - name: source
+      volumeClaimTemplate:
+        spec:
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 1Gi
